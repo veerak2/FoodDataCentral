@@ -8,6 +8,7 @@ namespace FoodDataCentral.Models
     public class FoodNutrient
     {
         [Key]
+        public int FoodNutrientId { get; set; }
         public int nutrientId { get; set; }
         public string nutrientName { get; set; }
         public string nutrientNumber { get; set; }
@@ -20,6 +21,7 @@ namespace FoodDataCentral.Models
     public class Food
     {
         [Key]
+        public int FoodId { get; set; }
         public int fdcId { get; set; }
         public string description { get; set; }
         public string lowercaseDescription { get; set; }
@@ -34,13 +36,13 @@ namespace FoodDataCentral.Models
         public string allHighlightFields { get; set; }
         public double score { get; set; }
 
-        [Key]
+        //[Key]
         public List<FoodNutrient> foodNutrients { get; set; }
     }
 
     public class Root
     {
-        public List<Food> foods { get; set; }
+        public Food foods { get; set; }
         public string QueryInput { get; set; }
         
     }

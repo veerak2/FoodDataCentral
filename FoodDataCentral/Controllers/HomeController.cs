@@ -11,6 +11,10 @@ using Microsoft.Extensions.Logging;
 using FoodDataCentral.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FoodDataCentral.Controllers
 {
@@ -49,7 +53,15 @@ namespace FoodDataCentral.Controllers
         public IActionResult FoodSelection()
         {
             Root passedModel = new Root();
-            passedModel.foods = new List<Food>();
+            passedModel.foods = new Food();
+            passedModel.QueryInput = "";
+            return View(passedModel);
+        }
+
+        public IActionResult FoodRead()
+        {
+            Root passedModel = new Root();
+            passedModel.foods = new Food();
             passedModel.QueryInput = "";
             return View(passedModel);
         }
@@ -77,14 +89,60 @@ namespace FoodDataCentral.Controllers
                 _logger.LogInformation(foodArray.ToString());
             }
 
+           
             Root passedModel = new Root();
-            passedModel.foods = foodList;
+            passedModel.foods = foodList[0];
             passedModel.QueryInput = queryInput;
 
-            return View("FoodSelection", passedModel);
+            Food food = new Food();
+            
+
+            food.fdcId = passedModel.foods.fdcId;
+            food.description = passedModel.foods.description;
+            food.brandName = passedModel.foods.brandName;
+            food.brandOwner = passedModel.foods.brandOwner;
+            food.dataType = passedModel.foods.dataType;
+            food.marketCountry = passedModel.foods.marketCountry;
+            food.ingredients = passedModel.foods.ingredients;
+            food.publishedDate = passedModel.foods.publishedDate;
+            food.foodNutrients = new List<FoodNutrient>();
+
+            foreach (var foodNut in passedModel.foods.foodNutrients)
+            {
+                FoodNutrient fNut = new FoodNutrient();
+                fNut.nutrientId = foodNut.nutrientId;
+                fNut.nutrientName = foodNut.nutrientName;
+                fNut.nutrientNumber = foodNut.nutrientNumber;
+                fNut.unitName = foodNut.unitName;
+                fNut.value = foodNut.value;
+                food.foodNutrients.Add(fNut);
+            }
+
+            db.Foods.Add(food);
+            db.SaveChanges();
+
+            Root passedModel2 = new Root();
+            passedModel2.foods = food;
+            passedModel2.QueryInput = queryInput;
+
+            return View("FoodSelection", passedModel2);
         }
 
-        [HttpPost]
+        public IActionResult GetFoodDataFromDb(string queryInput)
+        {
+            _logger.LogInformation(queryInput);
+            List<Food> foodList = null;
+            Food food = db.Foods.Include(p => p.foodNutrients).Where(row => row.fdcId == Convert.ToInt32(queryInput)).First();
+
+            Root passedModel = new Root();
+            passedModel.foods = food;
+            passedModel.QueryInput = queryInput;
+
+            return View("FoodRead", passedModel);
+        }
+
+
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create()
         {
@@ -96,7 +154,7 @@ namespace FoodDataCentral.Controllers
             {
                 return View();
             }
-        }
+        }*/
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -13,8 +13,10 @@
 
 <form asp-controller="Home" asp-action="GetFoodDataFromApi">
     <label asp-for="QueryInput">Food Category</label>
-    <input asp-for="QueryInput" placeholder="Food product to get some brands"/>
-    <input type="submit"/>
+    <input asp-for="QueryInput" placeholder="Food product to get some brands" />
+    <input type="submit" />
+    <input type="button" value="Update" asp-action="UpdateFoodData" />
+    <input type="button" value="Delete" asp-action="DeleteFoodData" />
 </form>
 
 <br>
@@ -22,52 +24,112 @@
 
 <table class="table">
     <thead>
-    <tr>
-        <th>
-            ID
-        </th>
-        <th>
-            Brand Name
-        </th>
-        <th>
-            Brand Owner
-        </th>
-        <th>
-            Market Country
-        </th>
-        <th>
-            Ingredients
-        </th>
-        <th>
-            Published Date
-        </th>
-    </tr>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Brand Name
+            </th>
+            <th>
+                Brand Owner
+            </th>
+            <th>
+                Market Country
+            </th>
+            <th>
+                Ingredients
+            </th>
+            <th>
+                Published Date
+            </th>
+        </tr>
     </thead>
 
     <tbody>
 
-    @foreach (var food in Model.foods)
-    {
+            @*@foreach (var food in Model.foods)*@
+            @if (Model.foods != null)
+            {
+        
         <tr>
             <td>
-                <p>@food.fdcId</p>
+                <input type="text" value=@Model.foods.fdcId>
             </td>
             <td>
-                <p>@food.brandName</p>
+                <input type="text" value=@Model.foods.brandName>
             </td>
             <td>
-                <p>@food.brandOwner</p>
+                <input type="text" value=@Model.foods.brandOwner>
             </td>
             <td>
-                <p>@food.marketCountry</p>
+                <input type="text" value=@Model.foods.marketCountry>
             </td>
             <td>
-                <p>@food.ingredients</p>
+                <input type="text" value=@Model.foods.ingredients>
             </td>
             <td>
-                <p>@food.publishedDate</p>
+                <input type="text" value=@Model.foods.publishedDate>
             </td>
         </tr>
-    }
-    
+           }
+        
 </table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                nutrientId
+            </th>
+            <th>
+                nutrientName
+            </th>
+            <th>
+                nutrientNumber
+            </th>
+            <th>
+                unitName
+            </th>
+            <th>
+                Value
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @if (Model.foods.foodNutrients != null)
+        {
+        @foreach (var nut in Model.foods.foodNutrients)
+        {
+
+            <tr>
+                <td>
+                    <input type="text" value=@nut.nutrientId>
+                </td>
+                <td>
+                    <input type="text" value=@nut.nutrientName>
+                </td>
+                <td>
+                    <input type="text" value=@nut.nutrientNumber>
+                </td>
+                <td>
+                    <input type="text" value=@nut.unitName>
+                </td>
+                <td>
+                    <input type="text" value=@nut.value>
+                </td>
+            </tr>
+        }
+        }
+
+</table>
+<br />
+<br />
+
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

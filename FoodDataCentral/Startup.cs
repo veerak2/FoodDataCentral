@@ -37,7 +37,9 @@ namespace FoodDataCentral
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<FoodDataCentralApplicationDbContext>();
+                
                 context.Database.EnsureCreated();
+                //context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Foods] ON");
             }
             if (env.IsDevelopment())
             {
